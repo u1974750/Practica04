@@ -5,7 +5,11 @@ class GameScene extends Phaser.Scene {
 		this.firstClick = null;
 		this.score = 100;
 		this.correct = 0;
+		var json = localStorage.getItem("config") || '{"cards":2,"difficulty":"hard"}';
+		this.optionsInfo = JSON.parse(json);
     }
+
+
 
     preload (){	 //quins assets s'usen al joc
 		//classe de l'escena.load.tipusLoad(nomDelRecurs, ruta) -> carrega textures
@@ -22,20 +26,23 @@ class GameScene extends Phaser.Scene {
 		let arraycards = ['co', 'sb', 'co', 'sb'];
 		this.cameras.main.setBackgroundColor(0xBFFCFF); //estableix color de fons
 		
-		this.add.image(250, 300, arraycards[0]);
-		this.add.image(350, 300, arraycards[1]);
-		this.add.image(450, 300, arraycards[2]);
-		this.add.image(550, 300, arraycards[3]);
-		//afageix imatge a l'escena(x,y,elemnent)  (mante mida original de l'arxiu)
+		let posX = 250;
+		for(var n = 0; n < this.optionsInfo.cards*2; n++){
+			this.add.image(posX, 300, arraycards[n]);
+			//afageix imatge a l'escena(x,y,elemnent)  (mante mida original de l'arxiu)
+			posX+= 100;
+		}
 		
 		this.cards = this.physics.add.staticGroup(); 
 			//physics -> objecte de físiques que detecta clics
 			//staticGroup -> grup d'obj que tindran un comportament similar. Estatic perque no es mouen.
-		
-		this.cards.create(250, 300, 'back');
-		this.cards.create(350, 300, 'back');
-		this.cards.create(450, 300, 'back');
-		this.cards.create(550, 300, 'back');
+			
+		posX = 250;
+		for(var n = 0; n < this.optionsInfo.cards*2; n++){
+			this.cards.create(posX, 300, 'back');
+			//afageix imatge a l'escena(x,y,elemnent)  (mante mida original de l'arxiu)
+			posX+= 100;
+		}
 			//create -> crea imatge amb collider
 			//this.nomNoExistent -> crea l'atribut
 
