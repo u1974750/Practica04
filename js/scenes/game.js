@@ -5,7 +5,8 @@ class GameScene extends Phaser.Scene {
 		this.firstClick = null;
 		this.score = 100;
 		this.correct = 0;
-		this.dif = 20;
+		this.difPoints = 20;
+		this.difSeconds = 0;
 
 		var json = localStorage.getItem("config") || '{"cards":2,"difficulty":"hard"}';
 		this.optionsInfo = JSON.parse(json);
@@ -24,9 +25,10 @@ class GameScene extends Phaser.Scene {
 		this.load.image('to', '../resources/to.png');
 		console.log(this.optionsInfo.cards);
 	}
-	
+
     create (){	 //posa els assets a l'escena
-		//Phasr.Utils.Array.Shuffle(array)
+		
+		//var canPlay = false;
 		let arraycards = ['co','co','sb','sb'];
 		if(this.optionsInfo.cards == 3){
 			arraycards = ['co','co','sb','sb', 'tb','tb'];
@@ -36,10 +38,12 @@ class GameScene extends Phaser.Scene {
 			arraycards = ['co','co','sb','sb', 'tb','tb','so','so'];
 			this.dif = 30;
 		}
-		console.log(arraycards);
 		Phaser.Utils.Array.Shuffle(arraycards);
-		console.log(arraycards);
-		//TODO: mirar que el array sigui de tantes cartes com seleccionades a opcions*2
+		 //TODO : marca difficulty com a undefined (???) **************************************************************
+		console.log(this.optionsInfo.difficulty);
+		if(this.optionsInfo.difficulty == 'hard') this.difSeconds = 2000;
+		else if (this.optionsInfo.difficulty == 'normal') this.difSeconds = 2500;
+		else if (this.optionsInfo.difficulty == 'easy') this.difSeconds = 3000;
 
 
 		this.cameras.main.setBackgroundColor(0xBFFCFF); //estableix color de fons
@@ -54,16 +58,17 @@ class GameScene extends Phaser.Scene {
 		this.cards = this.physics.add.staticGroup(); 
 			//physics -> objecte de físiques que detecta clics
 			//staticGroup -> grup d'obj que tindran un comportament similar. Estatic perque no es mouen.
-		/*	
-		posX = 250;
-		for(var n = 0; n < this.optionsInfo.cards*2; n++){
-			this.cards.create(posX, 300, 'back');
-			posX+= 100;
-		}
-		*/
-			//create -> crea imatge amb collider
-			//this.nomNoExistent -> crea l'atribut
-
+		
+		this.time.delayedCall(this.difSeconds, ()=>{
+			posX = 250;
+			for(var n = 0; n < this.optionsInfo.cards*2; n++){
+				this.cards.create(posX, 300, 'back');
+				//create -> crea imatge amb collider
+				//this.nomNoExistent -> crea l'atribut
+				posX+= 100;
+			}
+		})
+			
 		let i = 0;
 		this.cards.children.iterate((card)=>{ 								//passa un function arrow (PER USAR THIS!!!)
 				//(card) es com un foreach -> cada element de la iteració es diu card
@@ -96,7 +101,8 @@ class GameScene extends Phaser.Scene {
 					this.firstClick = card; //si no havie mclicat cap abans, la priemra és la clicada ara
 				}
 			}, card);
-		});
+		});			
+		
 	}
 	
 	update (){	} //bucle infinit de l'escena
