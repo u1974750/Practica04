@@ -5,6 +5,8 @@ class GameScene extends Phaser.Scene {
 		this.firstClick = null;
 		this.score = 100;
 		this.correct = 0;
+		this.dif = 20;
+
 		var json = localStorage.getItem("config") || '{"cards":2,"difficulty":"hard"}';
 		this.optionsInfo = JSON.parse(json);
     }
@@ -20,10 +22,26 @@ class GameScene extends Phaser.Scene {
 		this.load.image('so', '../resources/so.png');
 		this.load.image('tb', '../resources/tb.png');
 		this.load.image('to', '../resources/to.png');
+		console.log(this.optionsInfo.cards);
 	}
 	
     create (){	 //posa els assets a l'escena
-		let arraycards = ['co', 'sb', 'co', 'sb'];
+		//Phasr.Utils.Array.Shuffle(array)
+		let arraycards = ['co','co','sb','sb'];
+		if(this.optionsInfo.cards == 3){
+			arraycards = ['co','co','sb','sb', 'tb','tb'];
+			this.dif = 25;
+		}
+		else if(this.optionsInfo.cards == 4){
+			arraycards = ['co','co','sb','sb', 'tb','tb','so','so'];
+			this.dif = 30;
+		}
+		console.log(arraycards);
+		Phaser.Utils.Array.Shuffle(arraycards);
+		console.log(arraycards);
+		//TODO: mirar que el array sigui de tantes cartes com seleccionades a opcions*2
+
+
 		this.cameras.main.setBackgroundColor(0xBFFCFF); //estableix color de fons
 		
 		let posX = 250;
@@ -36,13 +54,13 @@ class GameScene extends Phaser.Scene {
 		this.cards = this.physics.add.staticGroup(); 
 			//physics -> objecte de físiques que detecta clics
 			//staticGroup -> grup d'obj que tindran un comportament similar. Estatic perque no es mouen.
-			
+		/*	
 		posX = 250;
 		for(var n = 0; n < this.optionsInfo.cards*2; n++){
 			this.cards.create(posX, 300, 'back');
-			//afageix imatge a l'escena(x,y,elemnent)  (mante mida original de l'arxiu)
 			posX+= 100;
 		}
+		*/
 			//create -> crea imatge amb collider
 			//this.nomNoExistent -> crea l'atribut
 
@@ -57,7 +75,7 @@ class GameScene extends Phaser.Scene {
 				card.disableBody(true,true); 								//(render,interacció) desactivem: no es veu ni es pot interactuar
 				if (this.firstClick){ 										//si ja s'ha clicat alguna carta
 					if (this.firstClick.card_id !== card.card_id){ 			//comparem 1r clic amb 2n clic si codis son diferents
-						this.score -= 20; //restem puntuació
+						this.score -= this.dif; //restem puntuació
 						this.firstClick.enableBody(false, 0, 0, true, true); //torna a girar la primera carta
 						card.enableBody(false, 0, 0, true, true); 			//torna a girar la segona carta
 						if (this.score <= 0){ 								//si arribem a 0 punts
@@ -67,7 +85,7 @@ class GameScene extends Phaser.Scene {
 					}
 					else{
 						this.correct++;
-						if (this.correct >= 2){
+						if (this.correct >= this.optionsInfo.cards){
 							alert("You Win with " + this.score + " points.");
 							loadpage("../");
 						}
