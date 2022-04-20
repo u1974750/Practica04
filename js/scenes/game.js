@@ -1,3 +1,8 @@
+var optionsInfo = {
+    cards:2, dificulty:"hard"
+};
+var json = localStorage.getItem("config") || '{"cards":2,"difficulty":"hard"}';
+
 class GameScene extends Phaser.Scene {
     constructor (){ //function (ja no fa falta especificar-ho)
         super('GameScene');  //crida el constructor de la classe la qual extén
@@ -7,8 +12,6 @@ class GameScene extends Phaser.Scene {
 		this.correct = 0;
 		this.difPoints = 20;
 		this.difSeconds = 0;
-
-		var json = localStorage.getItem("config") || '{"cards":2,"difficulty":"hard"}';
 		this.optionsInfo = JSON.parse(json);
     }
 
@@ -39,7 +42,7 @@ class GameScene extends Phaser.Scene {
 			this.dif = 30;
 		}
 		Phaser.Utils.Array.Shuffle(arraycards);
-		 //TODO : marca difficulty com a undefined (???) **************************************************************
+		 //TODO : intend d"arreclar unfedined: posar objecte fora la classe **************************************************************
 		console.log(this.optionsInfo.difficulty);
 		if(this.optionsInfo.difficulty == 'hard') this.difSeconds = 2000;
 		else if (this.optionsInfo.difficulty == 'normal') this.difSeconds = 2500;
@@ -67,41 +70,42 @@ class GameScene extends Phaser.Scene {
 				//this.nomNoExistent -> crea l'atribut
 				posX+= 100;
 			}
+			
+    		let i = 0;
+    		this.cards.children.iterate((card)=>{ 								//passa un function arrow (PER USAR THIS!!!)
+    				//(card) es com un foreach -> cada element de la iteració es diu card
+    			card.card_id = arraycards[i];
+    				//creem un atribut id que igualem al nom de la carta
+    			i++;
+    			card.setInteractive(); 											//detecta clics del ratolí
+    			card.on('pointerup', () => {
+    				card.disableBody(true,true); 								//(render,interacció) desactivem: no es veu ni es pot interactuar
+    				if (this.firstClick){ 										//si ja s'ha clicat alguna carta
+    					if (this.firstClick.card_id !== card.card_id){ 			//comparem 1r clic amb 2n clic si codis son diferents
+    						this.score -= this.dif; //restem puntuació
+    						this.firstClick.enableBody(false, 0, 0, true, true); //torna a girar la primera carta
+    						card.enableBody(false, 0, 0, true, true); 			//torna a girar la segona carta
+    						if (this.score <= 0){ 								//si arribem a 0 punts
+    							alert("Game Over"); 							//FI DE PARTIDA
+    							loadpage("../"); 								//torna al menú
+    						}
+    					}
+    					else{
+    						this.correct++;
+    						if (this.correct >= this.optionsInfo.cards){
+    							alert("You Win with " + this.score + " points.");
+    							loadpage("../");
+    						}
+    					}
+    					this.firstClick = null; //priemr clic es nul
+    				}
+    				else{
+    					this.firstClick = card; //si no havie mclicat cap abans, la priemra és la clicada ara
+    				}
+    			}, card);
+    		});			
 		})
 			
-		let i = 0;
-		this.cards.children.iterate((card)=>{ 								//passa un function arrow (PER USAR THIS!!!)
-				//(card) es com un foreach -> cada element de la iteració es diu card
-			card.card_id = arraycards[i];
-				//creem un atribut id que igualem al nom de la carta
-			i++;
-			card.setInteractive(); 											//detecta clics del ratolí
-			card.on('pointerup', () => {
-				card.disableBody(true,true); 								//(render,interacció) desactivem: no es veu ni es pot interactuar
-				if (this.firstClick){ 										//si ja s'ha clicat alguna carta
-					if (this.firstClick.card_id !== card.card_id){ 			//comparem 1r clic amb 2n clic si codis son diferents
-						this.score -= this.dif; //restem puntuació
-						this.firstClick.enableBody(false, 0, 0, true, true); //torna a girar la primera carta
-						card.enableBody(false, 0, 0, true, true); 			//torna a girar la segona carta
-						if (this.score <= 0){ 								//si arribem a 0 punts
-							alert("Game Over"); 							//FI DE PARTIDA
-							loadpage("../"); 								//torna al menú
-						}
-					}
-					else{
-						this.correct++;
-						if (this.correct >= this.optionsInfo.cards){
-							alert("You Win with " + this.score + " points.");
-							loadpage("../");
-						}
-					}
-					this.firstClick = null; //priemr clic es nul
-				}
-				else{
-					this.firstClick = card; //si no havie mclicat cap abans, la priemra és la clicada ara
-				}
-			}, card);
-		});			
 		
 	}
 	
