@@ -2,7 +2,7 @@ var optionsInfo = {
     cards: 2,
     dificulty: "hard"
 };
-var json = localStorage.getItem("config") || '{"cards":2,"difficulty":"hard"}';
+var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"hard"}';
 
 class GameScene extends Phaser.Scene {
     constructor () {
@@ -41,30 +41,17 @@ class GameScene extends Phaser.Scene {
             'sb',
             'sb'];
         if (this.optionsInfo.cards == 3) {
-            arraycards = ['co',
-                'co',
-                'sb',
-                'sb',
-                'tb',
-                'tb'];
+            arraycards = ['co', 'co', 'sb', 'sb', 'tb', 'tb'];
             this.dif = 25;
         } else if (this.optionsInfo.cards == 4) {
-            arraycards = ['co',
-                'co',
-                'sb',
-                'sb',
-                'tb',
-                'tb',
-                'so',
-                'so'];
+            arraycards = ['co', 'co', 'sb',  'sb', 'tb', 'tb', 'so', 'so'];
             this.dif = 30;
         }
         Phaser.Utils.Array.Shuffle(arraycards);
-        //TODO : intend d"arreclar unfedined: posar objecte fora la classe **************************************************************
-        console.log(this.optionsInfo.difficulty);
-        if (this.optionsInfo.difficulty == 'hard') this.difSeconds = 2000;
-        else if (this.optionsInfo.difficulty == 'normal') this.difSeconds = 2500;
-        else if (this.optionsInfo.difficulty == 'easy') this.difSeconds = 3000;
+
+        if (this.optionsInfo.dificulty == 'hard') this.difSeconds = 2000;
+        else if (this.optionsInfo.dificulty == 'normal') this.difSeconds = 2500;
+        else if (this.optionsInfo.dificulty == 'easy') this.difSeconds = 3000;
 
 
         this.cameras.main.setBackgroundColor(0xBFFCFF); //estableix color de fons
@@ -99,31 +86,33 @@ class GameScene extends Phaser.Scene {
                 card.setInteractive(); //detecta clics del ratolí
                 card.on('pointerup', () => {
                     card.disableBody(true, true); //(render,interacció) desactivem: no es veu ni es pot interactuar
-                    if (this.firstClick) {
-                        //si ja s'ha clicat alguna carta
-                        if (this.firstClick.card_id !== card.card_id) {
-                            //comparem 1r clic amb 2n clic si codis son diferents
-                            this.score -= this.dif; //restem puntuació
-                            this.firstClick.enableBody(false, 0, 0, true, true); //torna a girar la primera carta
-                            card.enableBody(false, 0, 0, true, true); //torna a girar la segona carta
-                            if (this.score <= 0) {
-                                //si arribem a 0 punts
-                                alert("Game Over"); //FI DE PARTIDA
-                                loadpage("../"); //torna al menú
+                    this.time.delayedCall(500, ()=> {
+                        if (this.firstClick) {
+                            //si ja s'ha clicat alguna carta
+                            if (this.firstClick.card_id !== card.card_id) {
+                                //comparem 1r clic amb 2n clic si codis son diferents
+                                this.score -= this.dif; //restem puntuació
+                                this.firstClick.enableBody(false, 0, 0, true, true); //torna a girar la primera carta
+                                card.enableBody(false, 0, 0, true, true); //torna a girar la segona carta
+                                if (this.score <= 0) {
+                                    //si arribem a 0 punts
+                                    alert("Game Over"); //FI DE PARTIDA
+                                    loadpage("../"); //torna al menú
+                                }
+                            } else {
+                                this.correct++;
+                                if (this.correct >= this.optionsInfo.cards) {
+                                    alert("You Win with " + this.score + " points.");
+                                    loadpage("../");
+                                }
                             }
+                            this.firstClick = null; //priemr clic es nul
                         } else {
-                            this.correct++;
-                            if (this.correct >= this.optionsInfo.cards) {
-                                alert("You Win with " + this.score + " points.");
-                                loadpage("../");
-                            }
+                            this.firstClick = card; //si no havie mclicat cap abans, la priemra és la clicada ara
                         }
-                        this.firstClick = null; //priemr clic es nul
-                    } else {
-                        this.firstClick = card; //si no havie mclicat cap abans, la priemra és la clicada ara
-                    }
-                },
-                    card);
+                    });
+                    
+                }, card);
             });
         })
 
