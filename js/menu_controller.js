@@ -44,3 +44,7 @@ function phaser_points(){
 function phaser_load(){
 	loadpage("./load.html");
 }
+
+function game_modes(){
+	loadpage("./gamemode.html");
+}
