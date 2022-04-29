@@ -98,6 +98,8 @@ class GameScene extends Phaser.Scene {
                             } else {
                                 this.correct++;
                                 if (this.correct >= this.optionsInfo.cards) {
+                                    //recarregar pagina per tal de comensar altre cop a jugar, loccalStorage per poder recuperar punts
+                                    //fer que cada cop sigui més difícil!!
                                     Phaser.Utils.Array.Shuffle(arraycards);
                                     posX = 250;
                                     for (var n = 0; n < this.optionsInfo.cards*2; n++) {
