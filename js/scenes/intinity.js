@@ -30,17 +30,13 @@ class GameScene extends Phaser.Scene {
         this.load.image('tb', '../resources/tb.png');
         this.load.image('to', '../resources/to.png');
         console.log(this.optionsInfo.cards);
-        alert("hola");
     }
 
     create () {
         //posa els assets a l'escena
 
         //var canPlay = false;
-        let arraycards = ['co',
-            'co',
-            'sb',
-            'sb'];
+        let arraycards = ['co','co', 'sb', 'sb'];
         if (this.optionsInfo.cards == 3) {
             arraycards = ['co', 'co', 'sb', 'sb', 'tb', 'tb'];
             this.dif = 25;
@@ -102,8 +98,13 @@ class GameScene extends Phaser.Scene {
                             } else {
                                 this.correct++;
                                 if (this.correct >= this.optionsInfo.cards) {
-                                    alert("You Win with " + this.score + " points.");
-                                    loadpage("../");
+                                    Phaser.Utils.Array.Shuffle(arraycards);
+                                    posX = 250;
+                                    for (var n = 0; n < this.optionsInfo.cards*2; n++) {
+                                        this.cards.create(posX, 300, 'back');
+                                        posX += 100;
+                                            card.setInteractive()
+                                    }
                                 }
                             }
                             this.firstClick = null; //priemr clic es nul

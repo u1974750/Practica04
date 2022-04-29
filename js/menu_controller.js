@@ -48,3 +48,8 @@ function phaser_load(){
 function game_modes(){
 	loadpage("./gamemode.html");
 }
+
+function phaser_infinity_game(){
+	loadpage("./phaserInfinity.html");
+}
+
