@@ -3,6 +3,8 @@ var optionsInfo = {
     dificulty: "hard"
 };
 var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"hard"}';
+var jsonScore = localStorage.getItem("points");
+var jsonRound = localStorage.getItem("round");
 
 class GameScene extends Phaser.Scene {
     constructor () {
@@ -10,7 +12,10 @@ class GameScene extends Phaser.Scene {
         super('GameScene'); //crida el constructor de la classe la qual extén
         this.cards = null; //back de les cartes
         this.firstClick = null;
-        this.score = 100;
+        this.score = JSON.parse(jsonScore);
+        if (this.score == null) this.score = 100;
+        this.round = JSON.parse(jsonRound);
+        if (this.round == null) this.round = 1;
         this.correct = 0;
         this.difPoints = 20;
         this.difSeconds = 0;
@@ -29,7 +34,6 @@ class GameScene extends Phaser.Scene {
         this.load.image('so', '../resources/so.png');
         this.load.image('tb', '../resources/tb.png');
         this.load.image('to', '../resources/to.png');
-        console.log(this.optionsInfo.cards);
     }
 
     create () {
@@ -39,10 +43,10 @@ class GameScene extends Phaser.Scene {
         let arraycards = ['co','co', 'sb', 'sb'];
         if (this.optionsInfo.cards == 3) {
             arraycards = ['co', 'co', 'sb', 'sb', 'tb', 'tb'];
-            this.dif = 25;
+            this.difPoints = 25;
         } else if (this.optionsInfo.cards == 4) {
             arraycards = ['co', 'co', 'sb',  'sb', 'tb', 'tb', 'so', 'so'];
-            this.dif = 30;
+            this.difPoints = 30;
         }
         Phaser.Utils.Array.Shuffle(arraycards);
 
@@ -72,7 +76,9 @@ class GameScene extends Phaser.Scene {
                 //this.nomNoExistent -> crea l'atribut
                 posX += 100;
             }
-
+            
+            console.log(this.score);
+            console.log(this.round);
             let i = 0;
             this.cards.children.iterate((card)=> {
                 //(card) es com un foreach -> cada element de la iteració es diu card
@@ -87,26 +93,24 @@ class GameScene extends Phaser.Scene {
                             //si ja s'ha clicat alguna carta
                             if (this.firstClick.card_id !== card.card_id) {
                                 //comparem 1r clic amb 2n clic si codis son diferents
-                                this.score -= this.dif; //restem puntuació
+                                this.score -= this.difPoints; //restem puntuació
                                 this.firstClick.enableBody(false, 0, 0, true, true); //torna a girar la primera carta
                                 card.enableBody(false, 0, 0, true, true); //torna a girar la segona carta
+                                console.log(this.score);
                                 if (this.score <= 0) {
                                     //si arribem a 0 punts
-                                    alert("Game Over"); //FI DE PARTIDA
+                                    alert("Game Over at Round:  " + this.round); //FI DE PARTIDA
                                     loadpage("../"); //torna al menú
+                                    localStorage.setItem("points", JSON.stringify(100));
+                                    localStorage.setItem("round", JSON.stringify(1));
                                 }
                             } else {
                                 this.correct++;
                                 if (this.correct >= this.optionsInfo.cards) {
-                                    //recarregar pagina per tal de comensar altre cop a jugar, loccalStorage per poder recuperar punts
-                                    //fer que cada cop sigui més difícil!!
-                                    Phaser.Utils.Array.Shuffle(arraycards);
-                                    posX = 250;
-                                    for (var n = 0; n < this.optionsInfo.cards*2; n++) {
-                                        this.cards.create(posX, 300, 'back');
-                                        posX += 100;
-                                            card.setInteractive()
-                                    }
+                                    localStorage.setItem("points", JSON.stringify(this.score));
+                                    this.round += 1;
+                                    localStorage.setItem("round", JSON.stringify(this.round));
+                                    loadpage("./phaserInfinity.html")
                                 }
                             }
                             this.firstClick = null; //priemr clic es nul
