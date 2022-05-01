@@ -5,6 +5,9 @@ var optionsInfo = {
 var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"hard"}';
 var jsonScore = localStorage.getItem("points");
 var jsonRound = localStorage.getItem("round");
+var jsonArray2 = localStorage.getItem("rankinginf");
+var rnk2 = JSON.parse(jsonArray2);
+var jsonName = localStorage.getItem("name");
 
 class GameScene extends Phaser.Scene {
     constructor () {
@@ -20,6 +23,7 @@ class GameScene extends Phaser.Scene {
         this.difPoints = 20;
         this.difSeconds = 0;
         this.optionsInfo = JSON.parse(json);
+        this.name = JSON.parse(jsonName);
     }
 
 
@@ -34,10 +38,14 @@ class GameScene extends Phaser.Scene {
         this.load.image('so', '../resources/so.png');
         this.load.image('tb', '../resources/tb.png');
         this.load.image('to', '../resources/to.png');
+        if(this.name == " "){
+            this.name = prompt("Enter your name: ");
+        }
     }
 
     create () {
         //posa els assets a l'escena
+        if(rnk2 == null) rnk2 = [];
 
         //var canPlay = false;
         let arraycards = ['co','co', 'sb', 'sb'];
@@ -108,6 +116,9 @@ class GameScene extends Phaser.Scene {
                                     localStorage.setItem("points", JSON.stringify(100));
                                     localStorage.setItem("round", JSON.stringify(1));
                                     localStorage.setItem("seconds", JSON.stringify(5));
+                                    rnk.push(["Name: "+ this.name, " Rounds: " + this.round]);
+                                    localStorage.setItem("ranking", JSON.stringify(rnk));
+                                    localStorage.setItem("name", JSON.stringify(" "));
                                 }
                             } else {
                                 this.correct++;
@@ -117,6 +128,7 @@ class GameScene extends Phaser.Scene {
                                     localStorage.setItem("round", JSON.stringify(this.round));
                                     var secondsToAdd = 5 * this.round
                                     localStorage.setItem("seconds", JSON.stringify(secondsToAdd));
+                                    localStorage.setItem("name", JSON.stringify(this.name));
                                     loadpage("./phaserInfinity.html")
                                 }
                             }

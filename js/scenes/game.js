@@ -3,7 +3,8 @@ var optionsInfo = {
     dificulty: "hard"
 };
 var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"hard"}';
-
+var jsonArray = localStorage.getItem("ranking");
+var rnk = JSON.parse(jsonArray);
 class GameScene extends Phaser.Scene {
     constructor () {
         //function (ja no fa falta especificar-ho)
@@ -15,6 +16,7 @@ class GameScene extends Phaser.Scene {
         this.difPoints = 20;
         this.difSeconds = 0;
         this.optionsInfo = JSON.parse(json);
+        this.name = "";
     }
 
 
@@ -29,13 +31,13 @@ class GameScene extends Phaser.Scene {
         this.load.image('so', '../resources/so.png');
         this.load.image('tb', '../resources/tb.png');
         this.load.image('to', '../resources/to.png');
-        console.log(this.optionsInfo.cards);
-        alert("hola");
+        this.name = prompt("Enter your name: ");
     }
 
     create () {
         //posa els assets a l'escena
-
+        if(rnk == null) rnk = [];
+        
         //var canPlay = false;
         let arraycards = ['co',
             'co',
@@ -76,7 +78,7 @@ class GameScene extends Phaser.Scene {
                 //this.nomNoExistent -> crea l'atribut
                 posX += 100;
             }
-
+            console.log(rnk);
             let i = 0;
             this.cards.children.iterate((card)=> {
                 //(card) es com un foreach -> cada element de la iteració es diu card
@@ -103,6 +105,8 @@ class GameScene extends Phaser.Scene {
                                 this.correct++;
                                 if (this.correct >= this.optionsInfo.cards) {
                                     alert("You Win with " + this.score + " points.");
+                                    rnk.push(["Name: "+ this.name, " Score: " +this.score]);
+                                    localStorage.setItem("ranking", JSON.stringify(rnk));
                                     loadpage("../");
                                 }
                             }

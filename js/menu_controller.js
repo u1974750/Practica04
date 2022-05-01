@@ -34,7 +34,7 @@ function back(){
 }
 
 function points(){
-	alert("points");
+	loadpage("./ranking.html");
 }
 
 function phaser_points(){

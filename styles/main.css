@@ -27,6 +27,11 @@ p{
 	font-family: 'Courier New', Courier, monospace;
 }
 
+div{
+	font-family: 'Courier New', Courier, monospace;
+	margin-bottom: 50px;
+}
+
 button{
 	border-radius: 10px;
 	border: 2px solid rgb(184, 197, 197);
