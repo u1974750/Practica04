@@ -50,9 +50,12 @@ class GameScene extends Phaser.Scene {
         }
         Phaser.Utils.Array.Shuffle(arraycards);
 
+        var jsonSeconds = localStorage.getItem("seconds");
+        
         if (this.optionsInfo.dificulty == 'hard') this.difSeconds = 2000;
         else if (this.optionsInfo.dificulty == 'normal') this.difSeconds = 2500;
         else if (this.optionsInfo.dificulty == 'easy') this.difSeconds = 3000;
+        this.difSeconds -= JSON.parse(jsonSeconds);
 
 
         this.cameras.main.setBackgroundColor(0xBFFCFF); //estableix color de fons
@@ -79,6 +82,7 @@ class GameScene extends Phaser.Scene {
             
             console.log(this.score);
             console.log(this.round);
+            console.log(this.difSeconds);
             let i = 0;
             this.cards.children.iterate((card)=> {
                 //(card) es com un foreach -> cada element de la iteració es diu card
@@ -103,6 +107,7 @@ class GameScene extends Phaser.Scene {
                                     loadpage("../"); //torna al menú
                                     localStorage.setItem("points", JSON.stringify(100));
                                     localStorage.setItem("round", JSON.stringify(1));
+                                    localStorage.setItem("seconds", JSON.stringify(5));
                                 }
                             } else {
                                 this.correct++;
@@ -110,6 +115,8 @@ class GameScene extends Phaser.Scene {
                                     localStorage.setItem("points", JSON.stringify(this.score));
                                     this.round += 1;
                                     localStorage.setItem("round", JSON.stringify(this.round));
+                                    var secondsToAdd = 5 * this.round
+                                    localStorage.setItem("seconds", JSON.stringify(secondsToAdd));
                                     loadpage("./phaserInfinity.html")
                                 }
                             }
