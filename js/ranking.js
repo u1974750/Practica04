@@ -9,13 +9,16 @@ var str = rankingInfo.map(function(item){
 }).join("<br/>");
 document.getElementById('OneRoundContainer').innerHTML = str;
 
-var jsonRanking2 = localStorage.getItem("rankinginf");
-rankingInfo2 = JSON.parse(jsonRanking);
 
-var str2 = rankingInfo.map(function(item){
+
+
+var jsonRanking2 = localStorage.getItem("rankinginf");
+rankingInfo2 = JSON.parse(jsonRanking2);
+
+var str2 = rankingInfo2.map(function(item2){
     for (var key2 in item2)
     console.log(item2[key2]);
         return item2;
 
 }).join("<br/>");
-document.getElementById('infRoundContainer').innerHTML = str;
+document.getElementById('infRoundContainer').innerHTML = str2;

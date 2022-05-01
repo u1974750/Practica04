@@ -116,8 +116,8 @@ class GameScene extends Phaser.Scene {
                                     localStorage.setItem("points", JSON.stringify(100));
                                     localStorage.setItem("round", JSON.stringify(1));
                                     localStorage.setItem("seconds", JSON.stringify(5));
-                                    rnk.push(["Name: "+ this.name, " Rounds: " + this.round]);
-                                    localStorage.setItem("ranking", JSON.stringify(rnk));
+                                    rnk2.push(["Name: "+ this.name, " Rounds: " + this.round]);
+                                    localStorage.setItem("rankinginf", JSON.stringify(rnk2));
                                     localStorage.setItem("name", JSON.stringify(" "));
                                 }
                             } else {
